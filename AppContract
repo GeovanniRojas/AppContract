@@ -1,0 +1,229 @@
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Generador de Contratos</title>
+    <style>
+        /* Estilos generales */
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            /* Fondo degradado de azul a blanco */
+            background: linear-gradient(to bottom, #00aaff, #ffffff);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        h2 {
+            text-align: center;
+            color: #333;
+        }
+
+        form {
+            max-width: 300px;
+            margin: auto;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        label {
+            display: block;
+            margin: 10px 0 5px;
+        }
+
+        input, select, button {
+            width: 100%;
+            padding: 10px;
+            margin: 5px 0;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+        }
+
+        button {
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #45a049;
+        }
+
+        .container {
+            display: none;
+        }
+
+        .active {
+            display: block;
+        }
+
+        /* Estilo para la visualización del contrato */
+        #contratoGenerado {
+            width: 80%;
+            margin: 20px;
+            padding: 20px;
+            background-color: #fff;
+            border-radius: 8px;
+            box-shadow: 0 0 10px rgba(0,0,0,0.1);
+        }
+
+        #contratoGenerado h3 {
+            margin-top: 0;
+        }
+
+        #contratoGenerado p {
+            margin: 15px 0;
+        }
+
+    </style>
+</head>
+<body>
+
+    <!-- Pantalla de Inicio de Sesión -->
+    <div id="login" class="container active">
+        <h2>Iniciar sesión</h2>
+        <form id="formLogin">
+            <label for="usuario">Usuario:</label>
+            <input type="text" id="usuario" name="usuario" required>
+            <label for="contraseña">Contraseña:</label>
+            <input type="password" id="contraseña" name="contraseña" required>
+            <button type="submit">Iniciar sesión</button>
+        </form>
+    </div>
+
+    <!-- Pantalla de Selección de Tipo de Contrato -->
+    <div id="tipoContrato" class="container">
+        <h2>Seleccionar tipo de contrato</h2>
+        <form id="formTipoContrato">
+            <label for="tipo">Tipo de contrato:</label>
+            <select id="tipo" name="tipo" required>
+                <option value="arrendamiento">Arrendamiento</option>
+                <option value="venta">Venta</option>
+                <option value="prestamo">Préstamo</option>
+            </select>
+            <button type="submit">Seleccionar</button>
+        </form>
+    </div>
+
+    <!-- Pantalla de Ingreso de Datos del Contrato -->
+    <div id="ingresoDatos" class="container">
+        <h2>Ingrese los datos del contrato</h2>
+        <form id="formIngreso">
+            <label for="nombre">Nombre:</label>
+            <input type="text" id="nombre" name="nombre" required>
+
+            <label for="direccion">Dirección:</label>
+            <input type="text" id="direccion" name="direccion" required>
+
+            <button type="submit">Guardar contrato</button>
+        </form>
+    </div>
+
+    <!-- Pantalla de Imprimir el Contrato -->
+    <div id="imprimirContrato" class="container">
+        <h2>Contrato generado</h2>
+        <div id="contratoGenerado">
+            <h3>Contrato de <span id="tipoContratoTexto"></span></h3>
+            <p>
+                <strong>Nombre:</strong> <span id="nombreContrato"></span>
+            </p>
+            <p>
+                <strong>Dirección:</strong> <span id="direccionContrato"></span>
+            </p>
+            <p>
+                <strong>Fecha de Contrato:</strong> <span id="fechaContrato"></span>
+            </p>
+            <h4>Términos y Condiciones:</h4>
+            <p id="terminosCondiciones"></p>
+            <button id="btnImprimir">Imprimir contrato</button>
+        </div>
+    </div>
+
+    <script>
+        // Función para cambiar entre pantallas
+        function showScreen(screenId) {
+            // Ocultar todas las pantallas
+            const screens = document.querySelectorAll('.container');
+            screens.forEach(screen => screen.classList.remove('active'));
+
+            // Mostrar la pantalla seleccionada
+            const screen = document.getElementById(screenId);
+            if (screen) {
+                screen.classList.add('active');
+            }
+        }
+
+        // Pantalla de login
+        document.getElementById('formLogin').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const usuario = document.getElementById('usuario').value;
+            const contraseña = document.getElementById('contraseña').value;
+
+            // Simulamos un login exitoso
+            if (usuario && contraseña) {
+                showScreen('tipoContrato');
+            } else {
+                alert('Por favor ingrese usuario y contraseña');
+            }
+        });
+
+        // Pantalla de selección de tipo de contrato
+        document.getElementById('formTipoContrato').addEventListener('submit', function(event) {
+            event.preventDefault();
+            const tipoContrato = document.getElementById('tipo').value;
+
+            // Guardamos el tipo de contrato en el almacenamiento local (simulación)
+            localStorage.setItem('tipoContrato', tipoContrato);
+
+            showScreen('ingresoDatos');
+        });
+
+        // Pantalla de ingreso de datos del contrato
+        document.getElementById('formIngreso').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            const nombre = document.getElementById('nombre').value;
+            const direccion = document.getElementById('direccion').value;
+            const tipoContrato = localStorage.getItem('tipoContrato');
+
+            // Guardamos los datos del contrato en el almacenamiento local
+            localStorage.setItem('nombre', nombre);
+            localStorage.setItem('direccion', direccion);
+
+            showScreen('imprimirContrato');
+        });
+
+        // Mostrar el contrato generado
+        window.onload = function() {
+            const nombre = localStorage.getItem('nombre');
+            const direccion = localStorage.getItem('direccion');
+            const tipoContrato = localStorage.getItem('tipoContrato');
+
+            // Si los datos están en el almacenamiento local, generamos el contrato
+            if (nombre && direccion && tipoContrato) {
+                document.getElementById('tipoContratoTexto').textContent = tipoContrato;
+                document.getElementById('nombreContrato').textContent = nombre;
+                document.getElementById('direccionContrato').textContent = direccion;
+                document.getElementById('fechaContrato').textContent = new Date().toLocaleDateString();
+                document.getElementById('terminosCondiciones').textContent = `Este contrato está basado en el tipo ${tipoContrato}, regulado por las leyes vigentes.`;
+            } else {
+                alert('Error: No se encontraron los datos del contrato.');
+            }
+        };
+
+        // Función para imprimir el contrato
+        document.getElementById('btnImprimir').addEventListener('click', function() {
+            window.print(); // Esto abre el cuadro de diálogo de impresión del navegador
+        });
+    </script>
+
+</body>
+</html>
